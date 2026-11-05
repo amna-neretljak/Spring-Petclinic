@@ -1,18 +1,18 @@
 import * as React from 'react';
 
-import { IRouter, Link } from 'react-router';
 import { url, submitForm } from '../../util';
+import withRouter from '../../withRouter';
 
 import Input from '../form/Input';
 import DateInput from '../form/DateInput';
 import SelectInput from '../form/SelectInput';
 
-import { IError, IOwner, IPetRequest, IEditablePet, IPet, IPetType, IRouterContext, ISelectOption } from '../../types';
+import { IError, IOwner, IPetRequest, IEditablePet, IRouterProps, ISelectOption } from '../../types';
 
-interface IPetEditorProps {
-  pet: IEditablePet;
-  owner: IOwner;
-  pettypes: ISelectOption[];
+interface IPetEditorProps extends IRouterProps {
+  pet?: IEditablePet;
+  owner?: IOwner;
+  pettypes?: ISelectOption[];
 }
 
 interface IPetEditorState {
@@ -20,13 +20,7 @@ interface IPetEditorState {
   error?: IError;
 };
 
-export default class PetEditor extends React.Component<IPetEditorProps, IPetEditorState> {
-
-  context: IRouterContext;
-
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired
-  };
+class PetEditor extends React.Component<IPetEditorProps, IPetEditorState> {
 
   constructor(props) {
     super(props);
@@ -51,9 +45,7 @@ export default class PetEditor extends React.Component<IPetEditorProps, IPetEdit
     const url = editablePet.isNew ? '/api/owners/' + owner.id + '/pets' :  '/api/owners/' + owner.id + '/pets/' + editablePet.id;
     submitForm(editablePet.isNew ? 'POST' : 'PUT', url, request, (status, response) => {
       if (status === 204) {
-        this.context.router.push({
-          pathname: '/owners/' + owner.id
-        });
+        this.props.navigate('/owners/' + owner.id);
       } else {
         console.log('ERROR?!...', response);
         this.setState({ error: response });
@@ -98,3 +90,5 @@ export default class PetEditor extends React.Component<IPetEditorProps, IPetEdit
     );
   }
 }
+
+export default withRouter(PetEditor);

@@ -1,18 +1,18 @@
 import * as React from 'react';
 import OwnerEditor from './OwnerEditor';
 
-import { IOwner } from '../../types';
+import { IOwner, IRouterProps } from '../../types';
 import { url } from '../../util';
+import withRouter from '../../withRouter';
 
-interface IEditOwnerPageProps {
-  params?: { ownerId?: string };
+interface IEditOwnerPageProps extends IRouterProps {
 }
 
 interface IEditOwnerPageState {
   owner: IOwner;
 }
 
-export default class EditOwnerPage extends React.Component<IEditOwnerPageProps, IEditOwnerPageState> {
+class EditOwnerPage extends React.Component<IEditOwnerPageProps, IEditOwnerPageState> {
   componentDidMount() {
     const { params } = this.props;
 
@@ -31,3 +31,5 @@ export default class EditOwnerPage extends React.Component<IEditOwnerPageProps, 
     return null;
   }
 }
+
+export default withRouter(EditOwnerPage);

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Route, IndexRoute, Redirect } from 'react-router';
+import { Route } from 'react-router';
 
 import App from './components/App';
 
@@ -20,18 +20,18 @@ import NotFoundPage from './components/NotFoundPage';
 
 
 export default () => (
-  <Route component={App}>
-    <Route path='/' component={WelcomePage} />
-    <Route path='/owners/list' component={FindOwnersPage} />
-    <Route path='/owners/new' component={NewOwnerPage} />
-    <Route path='/owners/:ownerId/edit' component={EditOwnerPage} />
-    <Route path='/owners/:ownerId/pets/:petId/edit' component={EditPetPage} />
-    <Route path='/owners/:ownerId/pets/new' component={NewPetPage} />
-    <Route path='/owners/:ownerId/pets/:petId/visits/new' component={VisitsPage} />
-    <Route path='/owners/:ownerId' component={OwnersPage} />
-    <Route path='/vets' component={VetsPage} />
-    <Route path='/error' component={ErrorPage} />
-    <Route path='*' component={NotFoundPage} />
+  <Route element={<App />}>
+    <Route path='/' element={<WelcomePage />} />
+    <Route path='/owners/list' element={<FindOwnersPage />} />
+    <Route path='/owners/new' element={<NewOwnerPage />} />
+    <Route path='/owners/:ownerId/edit' element={<EditOwnerPage />} />
+    <Route path='/owners/:ownerId/pets/:petId/edit' element={<EditPetPage />} />
+    <Route path='/owners/:ownerId/pets/new' element={<NewPetPage />} />
+    <Route path='/owners/:ownerId/pets/:petId/visits/new' element={<VisitsPage />} />
+    <Route path='/owners/:ownerId' element={<OwnersPage />} />
+    <Route path='/vets' element={<VetsPage />} />
+    <Route path='/error' element={<ErrorPage />} />
+    <Route path='*' element={<NotFoundPage />} />
   </Route>
 );
 

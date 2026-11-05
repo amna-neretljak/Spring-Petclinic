@@ -1,10 +1,7 @@
-require('jest');
 import * as React from 'react';
-import { shallow } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 
-import { NotEmpty } from '../../../../src/components/form/Constraints';
-import FieldFeedbackPanel from '../../../../src/components/form/FieldFeedbackPanel';
-import { IInputChangeHandler, IError, IConstraint } from '../../../../src/types';
+import { IConstraint } from '../../../../src/types';
 
 import Input from '../../../../src/components/form/Input';
 
@@ -30,7 +27,7 @@ describe('Input', () => {
       fieldErrors: {}
     };
 
-    const input = shallow(<Input object={object}
+    const { container } = render(<Input object={object}
       label='My Field'
       name='myField'
       error={error}
@@ -38,17 +35,18 @@ describe('Input', () => {
       />);
 
     // Make sure label is rendered correctly
-    expect(input.find('.control-label').text()).toBe('My Field');
+    expect(container.querySelector('.control-label').textContent).toBe('My Field');
 
     // Make sure input field's value is correct
-    expect(input.find('input').props().value).toBe('blabla');
+    const input = container.querySelector('input');
+    expect(input.value).toBe('blabla');
 
     // we don't have any errors
-    expect(input.find('.has-error').length).toBe(0);
-    expect(input.find(FieldFeedbackPanel).props().valid).toBe(true);
+    expect(container.querySelectorAll('.has-error').length).toBe(0);
+    expect(container.querySelector('.glyphicon-ok')).not.toBeNull();
 
     // change to new value
-    input.find('input').simulate('change', { target: { value: 'My new value' } });
+    fireEvent.change(input, { target: { value: 'My new value' } });
 
     // make sure callback is called
     expect(onChangeResult).toBeTruthy();
@@ -68,7 +66,7 @@ describe('Input', () => {
       }
     };
 
-    const input = shallow(<Input object={object}
+    const { container } = render(<Input object={object}
       label='My Field'
       name='myField'
       error={error}
@@ -76,15 +74,15 @@ describe('Input', () => {
       />);
 
     // Make sure label is rendered correctly
-    expect(input.find('.control-label').text()).toBe('My Field');
+    expect(container.querySelector('.control-label').textContent).toBe('My Field');
 
     // Make sure input field's value is correct
-    expect(input.find('input').props().value).toBe('blabla');
+    expect(container.querySelector('input').value).toBe('blabla');
 
-    // we don't have any errors
-    expect(input.find('.has-error').length).toBe(1);
-    expect(input.find(FieldFeedbackPanel).props().valid).toBe(false);
-    expect(input.find(FieldFeedbackPanel).props().fieldError).toBe(error.fieldErrors.myField);
+    // the field error is shown
+    expect(container.querySelectorAll('.has-error').length).toBe(1);
+    expect(container.querySelector('.glyphicon-ok')).toBeNull();
+    expect(container.querySelector('.help-inline').textContent).toBe('There was an error');
   });
 
   it('should checked constrains on input change', () => {
@@ -98,15 +96,15 @@ describe('Input', () => {
       validate: jest.fn()
     };
 
-    const input = shallow(<Input object={object}
+    const { container } = render(<Input object={object}
       label='My Field'
       name='myField'
       error={error}
       onChange={onChange}
-      constraint={constraint as any}
+      constraint={constraint}
       />);
 
-      input.find('input').simulate('change', { target: { value: 'My new value' } });
-      expect(constraint.validate).toHaveBeenCalledWith('My new value');
+    fireEvent.change(container.querySelector('input'), { target: { value: 'My new value' } });
+    expect(constraint.validate).toHaveBeenCalledWith('My new value');
   });
 });

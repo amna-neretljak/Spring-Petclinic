@@ -1,14 +1,14 @@
 import * as React from 'react';
 
-import { IRouter, Link } from 'react-router';
-import { IOwner, IRouterContext } from '../../types';
+import { Link } from 'react-router';
+import { IOwner, IRouterProps } from '../../types';
 import { url } from '../../util';
+import withRouter from '../../withRouter';
 
 import OwnersTable from './OwnersTable';
 
 
-interface IFindOwnersPageProps {
-  location: HistoryModule.Location;
+interface IFindOwnersPageProps extends IRouterProps {
 }
 
 interface IFindOwnersPageState {
@@ -16,17 +16,11 @@ interface IFindOwnersPageState {
   filter?: string;
 }
 
-const getFilterFromLocation = (location) => {
-  return location.query ? (location.query as any).lastName : null;
+const getFilterFromLocation = (location: IRouterProps['location']) => {
+  return new URLSearchParams(location.search).get('lastName');
 };
 
-export default class FindOwnersPage extends React.Component<IFindOwnersPageProps, IFindOwnersPageState> {
-  context: IRouterContext;
-
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired
-  };
-
+class FindOwnersPage extends React.Component<IFindOwnersPageProps, IFindOwnersPageState> {
   constructor(props) {
     super(props);
     this.onFilterChange = this.onFilterChange.bind(this);
@@ -38,16 +32,15 @@ export default class FindOwnersPage extends React.Component<IFindOwnersPageProps
   }
 
   componentDidMount() {
-    const { filter } = this.state;
-    if (typeof filter === 'string') {
-      // only load data on mount (initialy) if filter is specified
-      // i.e. lastName query param in uri was set
-      this.fetchData(filter);
-    }
+    // without a lastName query param this lists all owners
+    this.fetchData(this.state.filter);
   }
 
-  componentWillReceiveProps(nextProps: IFindOwnersPageProps) {
-    const { location } = nextProps;
+  componentDidUpdate(prevProps: IFindOwnersPageProps) {
+    const { location } = this.props;
+    if (location === prevProps.location) {
+      return;
+    }
 
     // read the filter from uri
     const filter = getFilterFromLocation(location);
@@ -74,9 +67,9 @@ export default class FindOwnersPage extends React.Component<IFindOwnersPageProps
   submitSearchForm() {
     const { filter } = this.state;
 
-    this.context.router.push({
+    this.props.navigate({
       pathname: '/owners/list',
-      query: { 'lastName': filter || '' }
+      search: '?' + new URLSearchParams({ lastName: filter || '' })
     });
   }
 
@@ -87,8 +80,9 @@ export default class FindOwnersPage extends React.Component<IFindOwnersPageProps
     const query = filter ? encodeURIComponent(filter) : '';
     const requestUrl = url('api/owners?lastName=' + query);
 
+    // the backend answers 404 with an empty body when no owner matches
     fetch(requestUrl)
-      .then(response => response.json())
+      .then(response => response.status === 404 ? [] : response.json())
       .then(owners => { this.setState({ owners }); });
   }
 
@@ -123,3 +117,5 @@ export default class FindOwnersPage extends React.Component<IFindOwnersPageProps
     );
   }
 };
+
+export default withRouter(FindOwnersPage);

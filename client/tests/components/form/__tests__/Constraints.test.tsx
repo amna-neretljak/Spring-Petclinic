@@ -1,8 +1,4 @@
-require('jest');
-
 import * as Constraints from '../../../../src/components/form/Constraints';
-
-const afunc = ({a}) => {};
 
 describe('Constraints', () => {
   describe('NotEmpty', () => {

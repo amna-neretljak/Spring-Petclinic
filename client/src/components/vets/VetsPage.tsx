@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { IRouter, Link } from 'react-router';
 import { url } from '../../util';
 
 import { IVet } from '../../types';
@@ -9,9 +8,9 @@ interface IVetsPageState {
   vets: IVet[];
 }
 
-export default class VetsPage extends React.Component<void, IVetsPageState> {
-  constructor() {
-    super();
+export default class VetsPage extends React.Component<{}, IVetsPageState> {
+  constructor(props) {
+    super(props);
 
     this.state = { vets: [] };
   }

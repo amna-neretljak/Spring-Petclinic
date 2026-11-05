@@ -1,8 +1,10 @@
-import { IRouter } from 'react-router';
+import { Location, NavigateFunction } from 'react-router';
 
 // ------------------------------------ ROUTER ------------------------------------
-export interface IRouterContext {
-  router: IRouter;
+export interface IRouterProps {
+  params: Readonly<Record<string, string | undefined>>;
+  location: Location;
+  navigate: NavigateFunction;
 };
 
 // ------------------------------------ UTIL --------------------------------------
@@ -54,7 +56,7 @@ interface IPerson extends IBaseEntity {
 }
 
 export interface IVisit extends IBaseEntity {
-  date: Date;
+  date: string;
   description: string;
 };
 
@@ -64,7 +66,7 @@ export interface IPetType extends INamedEntity {
 export type IPetTypeId = number;
 
 export interface IPet extends INamedEntity {
-  birthDate: Date;
+  birthDate: string;
   type: IPetType;
   visits: IVisit[];
 };

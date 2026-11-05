@@ -1,22 +1,29 @@
-/// <reference path="../../react-datepicker.d.ts" />
-
 import * as React from 'react';
 
-const ReactDatePicker = require('react-datepicker');
-import * as moment from 'moment';
+import DatePicker from 'react-datepicker';
 
 import { IError, IInputChangeHandler } from '../../types';
 
 import FieldFeedbackPanel from './FieldFeedbackPanel';
 
+// The backend exchanges dates as ISO strings (yyyy-MM-dd).
+const toDate = (value: string): Date => {
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const toDateString = (date: Date): string => {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+};
+
 export default ({object, error, name, label, onChange}: { object: any, error: IError, name: string, label: string, onChange: IInputChangeHandler }) => {
 
-  const handleOnChange = value => {
-    const dateString = value ? value.format('YYYY/MM/DD') : null;
-    onChange(name, dateString, null);
+  const handleOnChange = (value: Date | null) => {
+    onChange(name, value ? toDateString(value) : null, null);
   };
 
-  const selectedValue = object[name] ? moment(object[name], 'YYYY/MM/DD') : null;
+  const selectedValue = object[name] ? toDate(object[name]) : null;
   const fieldError = error && error.fieldErrors[name];
   const valid = !fieldError && selectedValue != null;
 
@@ -27,7 +34,7 @@ export default ({object, error, name, label, onChange}: { object: any, error: IE
       <label className='col-sm-2 control-label'>{label}</label>
 
       <div className='col-sm-10'>
-        <ReactDatePicker selected={selectedValue} onChange={handleOnChange} className='form-control' dateFormat='YYYY-MM-DD' />
+        <DatePicker selected={selectedValue} onChange={handleOnChange} className='form-control' dateFormat='yyyy-MM-dd' />
         <span className='glyphicon glyphicon-ok form-control-feedback' aria-hidden='true'></span>
         <FieldFeedbackPanel valid={valid} fieldError={fieldError} />
       </div>

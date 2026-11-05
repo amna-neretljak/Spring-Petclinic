@@ -1,24 +1,23 @@
 import * as React from 'react';
 
-import { Link } from 'react-router';
-import { IOwner } from '../../types';
+import { IOwner, IRouterProps } from '../../types';
 import { url } from '../../util';
+import withRouter from '../../withRouter';
 
 import OwnerInformation from './OwnerInformation';
 import PetsTable from './PetsTable';
 
-interface IOwnersPageProps {
-  params?: { ownerId?: string };
+interface IOwnersPageProps extends IRouterProps {
 }
 
 interface IOwnerPageState {
   owner?: IOwner;
 }
 
-export default class OwnersPage extends React.Component<IOwnersPageProps, IOwnerPageState> {
+class OwnersPage extends React.Component<IOwnersPageProps, IOwnerPageState> {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {};
   }
@@ -49,3 +48,5 @@ export default class OwnersPage extends React.Component<IOwnersPageProps, IOwner
     );
   }
 }
+
+export default withRouter(OwnersPage);

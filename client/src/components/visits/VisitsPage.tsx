@@ -1,8 +1,9 @@
 import * as React from 'react';
 
-import { IOwner, IPet, IPetType, IVisit, IError, IRouterContext } from '../../types';
+import { IOwner, IVisit, IError, IRouterProps } from '../../types';
 
 import { url, submitForm } from '../../util';
+import withRouter from '../../withRouter';
 import { NotEmpty } from '../form/Constraints';
 
 import DateInput from '../form/DateInput';
@@ -10,11 +11,7 @@ import Input from '../form/Input';
 import PetDetails from './PetDetails';
 
 
-interface IVisitsPageProps {
-  params: {
-    ownerId: string,
-    petId: string
-  };
+interface IVisitsPageProps extends IRouterProps {
 }
 
 interface IVisitsPageState {
@@ -23,14 +20,7 @@ interface IVisitsPageState {
   error?: IError;
 }
 
-export default class VisitsPage extends React.Component<IVisitsPageProps, IVisitsPageState> {
-
- context: IRouterContext;
-
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired
-  };
-
+class VisitsPage extends React.Component<IVisitsPageProps, IVisitsPageState> {
 
   constructor(props) {
     super(props);
@@ -68,9 +58,7 @@ export default class VisitsPage extends React.Component<IVisitsPageProps, IVisit
     const url = '/api/owners/' + owner.id + '/pets/' + petId + '/visits';
     submitForm('POST', url, request, (status, response) => {
       if (status === 204) {
-        this.context.router.push({
-          pathname: '/owners/' + owner.id
-        });
+        this.props.navigate('/owners/' + owner.id);
       } else {
         console.log('ERROR?!...', response);
         this.setState({ error: response });
@@ -117,5 +105,7 @@ export default class VisitsPage extends React.Component<IVisitsPageProps, IVisit
     );
   }
 }
+
+export default withRouter(VisitsPage);
 
 

@@ -1,19 +1,16 @@
 import * as React from 'react';
 
-import { IOwner, IEditablePet, ISelectOption } from '../../types';
+import { IOwner, IEditablePet, IRouterProps, ISelectOption } from '../../types';
 
 import { url } from '../../util';
+import withRouter from '../../withRouter';
 
 import LoadingPanel from './LoadingPanel';
 import PetEditor from './PetEditor';
 
 import createPetEditorModel from './createPetEditorModel';
 
-interface IEditPetPageProps {
-  params: {
-    ownerId: string,
-    petId: string
-  };
+interface IEditPetPageProps extends IRouterProps {
 }
 
 interface IEditPetPageState {
@@ -22,7 +19,7 @@ interface IEditPetPageState {
   pettypes?: ISelectOption[];
 };
 
-export default class EditPetPage extends React.Component<IEditPetPageProps, IEditPetPageState> {
+class EditPetPage extends React.Component<IEditPetPageProps, IEditPetPageState> {
 
   componentDidMount() {
     const { params } = this.props;
@@ -43,3 +40,5 @@ export default class EditPetPage extends React.Component<IEditPetPageProps, IEdi
     return <PetEditor {...this.state} />;
   }
 }
+
+export default withRouter(EditPetPage);

@@ -1,74 +1,66 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const port = process.env.PORT || 3000;
-
-const entries = [
-  'webpack-dev-server/client?http://localhost:' + port,
-  'webpack/hot/only-dev-server',
-  'react-hot-loader/patch',
-  './src/main.tsx'
-];
-
+const port = Number(process.env.PORT) || 3000;
 
 module.exports = {
+  mode: 'development',
   devtool: 'source-map',
-  entry: entries,
+  entry: './src/main.tsx',
   output: {
     path: path.join(__dirname, 'public/dist/'),
     filename: 'bundle.js',
-    publicPath: '/dist/'
-    /* redbox-react/README.md */
-    // ,devtoolModuleFilenameTemplate: '/[absolute-resource-path]'
+    publicPath: '/dist/',
+    clean: true
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
-      __API_SERVER_URL__: JSON.stringify('http://localhost:9966/petclinic')
+      __API_SERVER_URL__: JSON.stringify(process.env.API_SERVER_URL || 'http://localhost:9966/petclinic')
     })
   ],
   resolve: {
-    extensions: ['', '.ts', '.tsx', '.js']
+    extensions: ['.ts', '.tsx', '.js']
   },
-  resolveLoader: {
-    'fallback': path.join(__dirname, 'node_modules')
-  },
+  // react-datepicker's bundle contains a dynamic require that webpack cannot analyse; it is never reached at runtime.
+  ignoreWarnings: [{ module: /node_modules\/react-datepicker/ }],
   module: {
-    preLoaders: [
+    rules: [
       {
         test: /\.tsx?$/,
-        loader: 'tslint',
+        loader: 'ts-loader',
         include: path.join(__dirname, 'src')
-      }
-    ],
-    loaders: [
+      },
       {
         test: /\.css$/,
-        loader: 'style!css'
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.less$/,
-        loader: 'style!css!less',
+        use: [
+          'style-loader',
+          'css-loader',
+          // Bootstrap 3's Less sources rely on Less 3's division behavior.
+          { loader: 'less-loader', options: { lessOptions: { math: 'always' } } }
+        ],
         include: path.join(__dirname, 'src/styles')
       },
       {
         test: /\.(png|jpg)$/,
-        loader: 'url?limit=25000'
+        type: 'asset',
+        parser: { dataUrlCondition: { maxSize: 25000 } }
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2)$/,
-        loader: 'file?name=public/fonts/[name].[ext]'
-      },
-
-      {
-        test: /\.tsx?$/,
-        loader: 'babel!ts',
-        include: path.join(__dirname, 'src')
+        type: 'asset/resource',
+        generator: { filename: 'fonts/[name][ext]' }
       }
     ]
   },
-  tslint: {
-    emitErrors: true,
-    failOnHint: true
+  devServer: {
+    port,
+    hot: true,
+    historyApiFallback: true,
+    static: { directory: path.join(__dirname, 'public') },
+    devMiddleware: { publicPath: '/dist/' }
   }
 };
