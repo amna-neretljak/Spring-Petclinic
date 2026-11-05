@@ -27,9 +27,10 @@ To start the server, launch a Terminal and run from the project's root folder (`
 ./mvnw spring-boot:run
 ```
 
-When the server is running you can try to access the API for example to query all known pet types:
+The server runs on port `9966` with the context path `/petclinic` (see `src/main/resources/application.properties`).
+Leave it running, and from a second terminal try the API, for example to query all known pet types:
 ```
-curl http://localhost:8080/api/pettypes
+curl http://localhost:9966/petclinic/api/pettypes
 ```
 
 After starting the server you can install and run the client from the `client` folder:
@@ -61,7 +62,7 @@ If you you want to follow me on twitter, my handle is [@nilshartmann](https://tw
 	./mvnw spring-boot:run
 ```
 
-You can then access petclinic here: http://localhost:8080/
+You can then access petclinic here: http://localhost:9966/petclinic/
 
 ## In case you find a bug/suggested improvement for Spring Petclinic
 Our issue tracker is available here: https://github.com/spring-projects/spring-petclinic/issues
