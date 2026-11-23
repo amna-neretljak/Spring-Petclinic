@@ -250,7 +250,7 @@ Every phase has a **TDD record** (fill in with the real command output when the 
 
 **Manual check**: `PORT=4444 npm start` from `client/`. Open `http://localhost:4444`, click **Login**, see the form with username, password, and a Login button. A real successful sign-in is Phase 5, after `POST /api/login` exists. User confirmed 23 November 2026.
 
-### Phase 4: Store credentials and Logout - PLANNED
+### Phase 4: Store credentials and Logout - COMPLETED
 
 **Objective**: Keep username and password in the browser after a 2xx login, and clear them on Logout.
 
@@ -262,11 +262,12 @@ Every phase has a **TDD record** (fill in with the real command output when the 
 
 **Deliverables**: storage helpers used by the login page and `Menu`; tests for save/clear and the Login vs Logout label.
 
-**TDD record** (fill in when running the phase):
-- Red: `npm test` in `client/` — storage and logout tests fail.
-- Green: same tests pass.
+**TDD record**:
+- Red: `npm test` in `client/` — `Cannot find module .../authStorage`; Menu still showed Login when keys were set; LoginPage 2xx left `petclinic.username` null.
+- Green: `npm test` in `client/` — Test Suites: 6 passed, Tests: 23 passed.
+- Manual confirmation: user set both keys to `admin`, refreshed, saw **Logout**, clicked it, keys were gone and **Login** returned.
 
-**Manual check**: in DevTools → Application → Local Storage, set `petclinic.username` and `petclinic.password`, then refresh: the menu shows **Logout**. Click **Logout**: both keys are gone and the menu shows **Login**. Successful form login that writes the keys is Phase 5.
+**Manual check**: in DevTools → Application → Local Storage, set `petclinic.username` and `petclinic.password`, then refresh: the menu shows **Logout**. Click **Logout**: both keys are gone and the menu shows **Login**. Successful form login that writes the keys is Phase 5. User confirmed 23 November 2026.
 
 ### Phase 5: POST /api/login and Authorization header - PLANNED
 
@@ -358,9 +359,9 @@ Authorization: Basic <that>
 - [ ] `POST /api/login` with an invalid password returns 401
 - [x] Menu has **Login** when signed out; it opens `/login`
 - [x] The login form posts username and password to `/api/login`
-- [ ] After 200, `localStorage` holds `petclinic.username` and `petclinic.password`
-- [ ] After success, the menu shows **Logout**
-- [ ] Logout clears `localStorage` and shows **Login**
+- [x] After 200, `localStorage` holds `petclinic.username` and `petclinic.password`
+- [x] After success, the menu shows **Logout**
+- [x] Logout clears `localStorage` and shows **Login**
 - [ ] Later API calls include `Authorization: Basic` with Base64 of `username:password`
 - [ ] No user-creation form was added
 - [ ] No backend session or logout API was added
@@ -486,6 +487,6 @@ Add entries as bugs are found. Starters:
 ## Current Status
 
 **Last Updated**: 23 November 2026
-**Current Phase**: Phase 4 - Store credentials and Logout
-**Status**: Phase 3 COMPLETED
-**Next Steps**: After commit (if requested), start Phase 4
+**Current Phase**: Phase 5 - POST /api/login and Authorization header
+**Status**: Phase 4 COMPLETED
+**Next Steps**: After commit (if requested), start Phase 5

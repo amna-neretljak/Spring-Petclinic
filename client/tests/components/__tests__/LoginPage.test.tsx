@@ -11,6 +11,7 @@ jest.mock('../../../src/util', () => ({
 
 describe('LoginPage', () => {
   beforeEach(() => {
+    localStorage.clear();
     (submitForm as jest.Mock).mockReset();
   });
 
@@ -56,5 +57,22 @@ describe('LoginPage', () => {
     expect(container.textContent).toMatch(/invalid username or password/i);
     expect(container.querySelector('input[name="username"]')).not.toBeNull();
     expect(container.querySelector('input[name="password"]')).not.toBeNull();
+    expect(localStorage.getItem('petclinic.username')).toBeNull();
+  });
+
+  it('writes credentials to localStorage on 2xx login', () => {
+    (submitForm as jest.Mock).mockImplementation((_method, _path, _data, onSuccess) => {
+      onSuccess(200, {});
+    });
+
+    const { container } = render(<LoginPage />);
+
+    fireEvent.change(container.querySelector('input[name="username"]'), { target: { value: 'admin' } });
+    fireEvent.change(container.querySelector('input[name="password"]'), { target: { value: 'secret' } });
+    fireEvent.click(container.querySelector('button[type="submit"]'));
+
+    expect(localStorage.getItem('petclinic.username')).toBe('admin');
+    expect(localStorage.getItem('petclinic.password')).toBe('secret');
   });
 });
+

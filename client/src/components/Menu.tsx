@@ -1,12 +1,23 @@
 import * as React from 'react';
 
+import { clearCredentials, isSignedIn } from '../util/authStorage';
+
 const MenuItem = ({active, url, title, children}: { active: boolean, url: string, title: string, children?: any }) => (
   <li className={active ? 'active' : ''}>
     <a href={url} title={title}>{children}</a>
   </li>
 );
 
-export default ({name}: { name: string }) => (
+export default ({name}: { name: string }) => {
+  const [signedIn, setSignedIn] = React.useState(isSignedIn());
+
+  const onLogout = (event) => {
+    event.preventDefault();
+    clearCredentials();
+    setSignedIn(false);
+  };
+
+  return (
   <nav className='navbar navbar-default' role='navigation'>
     <div className='container'>
       <div className='navbar-header'>
@@ -40,12 +51,22 @@ export default ({name}: { name: string }) => (
                     <span>Error</span>
           </MenuItem>
 
-          <MenuItem active={name === '/login'} url='/login' title='login'>
-            <span className='glyphicon glyphicon-user' aria-hidden='true'></span>&nbsp;
+          {signedIn ? (
+            <li>
+              <a href='#' title='logout' onClick={onLogout}>
+                <span className='glyphicon glyphicon-off' aria-hidden='true'></span>&nbsp;
+                    <span>Logout</span>
+              </a>
+            </li>
+          ) : (
+            <MenuItem active={name === '/login'} url='/login' title='login'>
+              <span className='glyphicon glyphicon-user' aria-hidden='true'></span>&nbsp;
                     <span>Login</span>
-          </MenuItem>
+            </MenuItem>
+          )}
         </ul>
       </div>
     </div>
   </nav>
-);
+  );
+};

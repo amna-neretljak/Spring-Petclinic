@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { url, submitForm } from '../util';
+import { saveCredentials } from '../util/authStorage';
 
 import Input from './form/Input';
 import { NotEmpty } from './form/Constraints';
@@ -40,6 +41,7 @@ export default class LoginPage extends React.Component<{}, ILoginPageState> {
 
     submitForm('POST', '/api/login', { username: credentials.username, password: credentials.password }, (status) => {
       if (status >= 200 && status < 300) {
+        saveCredentials(credentials.username, credentials.password);
         this.setState({ loginError: undefined });
       } else {
         this.setState({ loginError: 'Invalid username or password' });
