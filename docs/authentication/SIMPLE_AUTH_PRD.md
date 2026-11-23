@@ -211,7 +211,7 @@ Every phase has a **TDD record** (fill in with the real command output when the 
 
 **Manual check**: from the project root run `./mvnw test -Dtest=UserServiceSpringDataJpaTests`. Confirm the new tests failed before the code change and passed after it. There is no HTTP for this lookup yet. Confirm with the user, then mark COMPLETED.
 
-### Phase 2: Check username and password - PLANNED
+### Phase 2: Check username and password - COMPLETED
 
 **Objective**: `UserService.login` accepts the seeded admin and rejects bad credentials.
 
@@ -223,11 +223,12 @@ Every phase has a **TDD record** (fill in with the real command output when the 
 
 **Deliverables**: `UserService.login` / `UserServiceImpl.login`; `{noop}` stripped before compare.
 
-**TDD record** (fill in when running the phase):
-- Red: `./mvnw test` — new login tests fail (`login` missing).
-- Green: `./mvnw test` — `admin`/`admin` passes, unknown user and wrong password stay false.
+**TDD record**:
+- Red: `./mvnw test -Dtest=UserServiceSpringDataJpaTests` — test compile failed: `cannot find symbol login` on `UserService` (three errors in `AbstractUserServiceTests.java`).
+- Green: `./mvnw test` — BUILD SUCCESS, Tests run: 198, Failures: 0. `UserServiceSpringDataJpaTests` now runs 6 tests (including the three login cases).
+- Manual confirmation: user ran `./mvnw test -Dtest=UserServiceSpringDataJpaTests` and reported Tests run: 6, Failures: 0.
 
-**Manual check**: run `./mvnw test -Dtest=UserServiceSpringDataJpaTests`. Confirm red then green for the three login tests. Confirm with the user, then mark COMPLETED.
+**Manual check**: run `./mvnw test -Dtest=UserServiceSpringDataJpaTests`. Confirm red then green for the three login tests. Confirm with the user, then mark COMPLETED. User confirmed 23 November 2026.
 
 ### Phase 3: Login page and navigation - PLANNED
 
@@ -484,6 +485,6 @@ Add entries as bugs are found. Starters:
 ## Current Status
 
 **Last Updated**: 23 November 2026
-**Current Phase**: Phase 2 - Check username and password
-**Status**: Phase 1 COMPLETED
-**Next Steps**: After commit (if requested), start Phase 2
+**Current Phase**: Phase 3 - Login page and navigation
+**Status**: Phase 2 COMPLETED
+**Next Steps**: After commit (if requested), start Phase 3

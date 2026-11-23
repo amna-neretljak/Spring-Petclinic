@@ -49,4 +49,19 @@ public abstract class AbstractUserServiceTests {
         User user = userRepository.findByUsername("nobody");
         assertThat(user, is(nullValue()));
     }
+
+    @Test
+    public void shouldLoginAdminWithCorrectPassword() {
+        assertThat(userService.login("admin", "admin"), is(true));
+    }
+
+    @Test
+    public void shouldRejectLoginForUnknownUsername() {
+        assertThat(userService.login("nobody", "admin"), is(false));
+    }
+
+    @Test
+    public void shouldRejectLoginForWrongPassword() {
+        assertThat(userService.login("admin", "wrong"), is(false));
+    }
 }

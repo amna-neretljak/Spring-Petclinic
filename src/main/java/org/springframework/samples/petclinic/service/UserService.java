@@ -4,5 +4,7 @@ import org.springframework.samples.petclinic.model.User;
 
 public interface UserService {
 
-    void saveUser(User user) ;
+    void saveUser(User user);
+
+    boolean login(String username, String password);
 }

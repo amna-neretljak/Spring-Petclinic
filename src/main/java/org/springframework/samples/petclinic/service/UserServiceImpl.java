@@ -33,4 +33,18 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean login(String username, String password) {
+        User user = userRepository.findByUsername(username);
+        if (user == null || !Boolean.TRUE.equals(user.getEnabled())) {
+            return false;
+        }
+        String stored = user.getPassword();
+        if (stored != null && stored.startsWith("{noop}")) {
+            stored = stored.substring("{noop}".length());
+        }
+        return stored != null && stored.equals(password);
+    }
 }
