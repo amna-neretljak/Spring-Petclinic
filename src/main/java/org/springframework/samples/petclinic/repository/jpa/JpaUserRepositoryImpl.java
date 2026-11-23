@@ -17,6 +17,11 @@ public class JpaUserRepositoryImpl implements UserRepository {
     private EntityManager em;
 
     @Override
+    public User findByUsername(String username) throws DataAccessException {
+        return this.em.find(User.class, username);
+    }
+
+    @Override
     public void save(User user) throws DataAccessException {
         if (this.em.find(User.class, user.getUsername()) == null) {
             this.em.persist(user);

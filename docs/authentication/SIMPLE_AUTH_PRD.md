@@ -194,7 +194,7 @@ Follow `.cursor/rules/tdd-workflow.mdc`: tests first, `./mvnw test` (and `npm te
 
 Every phase has a **TDD record** (fill in with the real command output when the phase is run) and a **Manual check** the user can run. Phases 1–2 have no HTTP yet. Phases 3–4 are the UI (form, nav, localStorage, Logout). Phase 5 is the HTTP login endpoint **and** the Authorization header on later API calls.
 
-### Phase 1: Find user by username - PLANNED
+### Phase 1: Find user by username - COMPLETED
 
 **Objective**: Look up a user by username from the existing `users` table.
 
@@ -205,9 +205,9 @@ Every phase has a **TDD record** (fill in with the real command output when the 
 
 **Deliverables**: `UserRepository.findByUsername` on the interface and all three implementations; tests on `AbstractUserServiceTests` (or a small repository test that uses the same profiles).
 
-**TDD record** (fill in when running the phase):
-- Red: `./mvnw test` — new lookup tests fail (`findByUsername` missing).
-- Green: `./mvnw test` — same tests pass after the method exists on all three repositories.
+**TDD record**:
+- Red: `./mvnw test -Dtest=UserServiceSpringDataJpaTests` — test compile failed: `cannot find symbol findByUsername` on `UserRepository` (`AbstractUserServiceTests.java` lines 43 and 49).
+- Green: `./mvnw test` — BUILD SUCCESS, Tests run: 189, Failures: 0, Errors: 0, Skipped: 0. New tests `shouldFindAdminByUsername` and `shouldReturnNullForUnknownUsername` pass on Spring Data, JPA, and JDBC (3 tests in each of those classes, including the existing `shouldAddUser`).
 
 **Manual check**: from the project root run `./mvnw test -Dtest=UserServiceSpringDataJpaTests`. Confirm the new tests failed before the code change and passed after it. There is no HTTP for this lookup yet. Confirm with the user, then mark COMPLETED.
 
@@ -346,8 +346,8 @@ Authorization: Basic <that>
 
 ## Acceptance Criteria
 
-- [ ] `findByUsername("admin")` returns the seeded user
-- [ ] `findByUsername` for an unknown name returns `null`
+- [x] `findByUsername("admin")` returns the seeded user
+- [x] `findByUsername` for an unknown name returns `null`
 - [ ] `login("admin", "admin")` is true
 - [ ] `login` with a wrong username is false
 - [ ] `login` with a wrong password is false
@@ -484,6 +484,6 @@ Add entries as bugs are found. Starters:
 ## Current Status
 
 **Last Updated**: 23 November 2026
-**Current Phase**: Phase 1 - Find user by username
-**Status**: PRD READY — not started
-**Next Steps**: After the user approves this PRD, create a feature branch and begin Phase 1 (tests first)
+**Current Phase**: Phase 2 - Check username and password
+**Status**: Phase 1 COMPLETED
+**Next Steps**: After commit (if requested), start Phase 2

@@ -5,15 +5,20 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.repository.UserRepository;
 import org.springframework.samples.petclinic.service.UserService;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public abstract class AbstractUserServiceTests {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @BeforeEach
     public void init() {
@@ -31,5 +36,17 @@ public abstract class AbstractUserServiceTests {
         userService.saveUser(user);
         assertThat(user.getRoles().parallelStream().allMatch(role -> role.getName().startsWith("ROLE_")), is(true));
         assertThat(user.getRoles().parallelStream().allMatch(role -> role.getUser() != null), is(true));
+    }
+
+    @Test
+    public void shouldFindAdminByUsername() {
+        User user = userRepository.findByUsername("admin");
+        assertThat(user.getUsername(), is("admin"));
+    }
+
+    @Test
+    public void shouldReturnNullForUnknownUsername() {
+        User user = userRepository.findByUsername("nobody");
+        assertThat(user, is(nullValue()));
     }
 }

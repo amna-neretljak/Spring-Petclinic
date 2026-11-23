@@ -32,6 +32,15 @@ public class JdbcUserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User findByUsername(String username) throws DataAccessException {
+        try {
+            return getByUsername(username);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
     public void save(User user) throws DataAccessException {
 
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
