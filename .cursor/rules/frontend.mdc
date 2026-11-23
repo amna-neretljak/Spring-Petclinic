@@ -26,4 +26,4 @@ The client is a small React SPA in `client/`. There is **no** Redux, React Query
 
 ## Forms
 
-Keep local state on the page. Reuse `form/` widgets. Do not add Formik, React Hook Form, or a component library unless the user asks. There is no login page and no `Authorization` header.
+Keep local state on the page. Reuse `form/` widgets. Do not add Formik, React Hook Form, or a component library unless the user asks. Authorization headers are added in a later login phase.

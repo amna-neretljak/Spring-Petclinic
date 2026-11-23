@@ -39,6 +39,11 @@ export default ({name}: { name: string }) => (
             <span className='glyphicon glyphicon-warning-sign' aria-hidden='true'></span>&nbsp;
                     <span>Error</span>
           </MenuItem>
+
+          <MenuItem active={name === '/login'} url='/login' title='login'>
+            <span className='glyphicon glyphicon-user' aria-hidden='true'></span>&nbsp;
+                    <span>Login</span>
+          </MenuItem>
         </ul>
       </div>
     </div>

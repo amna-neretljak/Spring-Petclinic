@@ -13,6 +13,7 @@ import EditPetPage from './components/pets/EditPetPage';
 import VisitsPage from './components/visits/VisitsPage';
 import VetsPage from './components/vets/VetsPage';
 import ErrorPage from './components/ErrorPage';
+import LoginPage from './components/LoginPage';
 
 
 import NotFoundPage from './components/NotFoundPage';
@@ -31,6 +32,7 @@ export default () => (
     <Route path='/owners/:ownerId' element={<OwnersPage />} />
     <Route path='/vets' element={<VetsPage />} />
     <Route path='/error' element={<ErrorPage />} />
+    <Route path='/login' element={<LoginPage />} />
     <Route path='*' element={<NotFoundPage />} />
   </Route>
 );

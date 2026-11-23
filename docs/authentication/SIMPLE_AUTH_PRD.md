@@ -230,7 +230,7 @@ Every phase has a **TDD record** (fill in with the real command output when the 
 
 **Manual check**: run `./mvnw test -Dtest=UserServiceSpringDataJpaTests`. Confirm red then green for the three login tests. Confirm with the user, then mark COMPLETED. User confirmed 23 November 2026.
 
-### Phase 3: Login page and navigation - PLANNED
+### Phase 3: Login page and navigation - COMPLETED
 
 **Objective**: The UI can open a login form from the top navigation.
 
@@ -243,11 +243,12 @@ Every phase has a **TDD record** (fill in with the real command output when the 
 
 **Deliverables**: `configureRoutes.tsx` `/login`; `LoginPage` (or equivalent) using `form/` widgets; `Menu` Login item; client tests if they exist for routes/forms, otherwise `npm test` still run.
 
-**TDD record** (fill in when running the phase):
-- Red: `npm test` in `client/` — login page/route tests fail (no `/login`).
-- Green: same command — form renders and Login is in the menu.
+**TDD record**:
+- Red: `npm test` in `client/` — `LoginPage.test.tsx` failed with `Cannot find module .../LoginPage`; `Menu.test.tsx` failed because `a[href="/login"]` was null. (Jest cannot import `react-router` ESM, so the route is covered by adding `/login` in `configureRoutes.tsx` rather than a router render test.)
+- Green: `npm test` in `client/` — Test Suites: 5 passed, Tests: 18 passed.
+- Manual confirmation: user clicked **Login** and saw the username and password fields.
 
-**Manual check**: `PORT=4444 npm start` from `client/`. Open `http://localhost:4444`, click **Login**, see the form with username, password, and a Login button. A real successful sign-in is Phase 5, after `POST /api/login` exists.
+**Manual check**: `PORT=4444 npm start` from `client/`. Open `http://localhost:4444`, click **Login**, see the form with username, password, and a Login button. A real successful sign-in is Phase 5, after `POST /api/login` exists. User confirmed 23 November 2026.
 
 ### Phase 4: Store credentials and Logout - PLANNED
 
@@ -349,14 +350,14 @@ Authorization: Basic <that>
 
 - [x] `findByUsername("admin")` returns the seeded user
 - [x] `findByUsername` for an unknown name returns `null`
-- [ ] `login("admin", "admin")` is true
-- [ ] `login` with a wrong username is false
-- [ ] `login` with a wrong password is false
+- [x] `login("admin", "admin")` is true
+- [x] `login` with a wrong username is false
+- [x] `login` with a wrong password is false
 - [ ] `POST /api/login` with `admin` / `admin` returns 200 and no extra body
 - [ ] `POST /api/login` with an invalid username returns 401
 - [ ] `POST /api/login` with an invalid password returns 401
-- [ ] Menu has **Login** when signed out; it opens `/login`
-- [ ] The login form posts username and password to `/api/login`
+- [x] Menu has **Login** when signed out; it opens `/login`
+- [x] The login form posts username and password to `/api/login`
 - [ ] After 200, `localStorage` holds `petclinic.username` and `petclinic.password`
 - [ ] After success, the menu shows **Logout**
 - [ ] Logout clears `localStorage` and shows **Login**
@@ -485,6 +486,6 @@ Add entries as bugs are found. Starters:
 ## Current Status
 
 **Last Updated**: 23 November 2026
-**Current Phase**: Phase 3 - Login page and navigation
-**Status**: Phase 2 COMPLETED
-**Next Steps**: After commit (if requested), start Phase 3
+**Current Phase**: Phase 4 - Store credentials and Logout
+**Status**: Phase 3 COMPLETED
+**Next Steps**: After commit (if requested), start Phase 4
