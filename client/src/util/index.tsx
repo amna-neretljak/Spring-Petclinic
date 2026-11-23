@@ -1,4 +1,5 @@
 import { IHttpMethod } from '../types';
+import { getCredentials } from './authStorage';
 
 const BACKEND_URL = (typeof __API_SERVER_URL__ === 'undefined' ? 'http://localhost:9966/petclinic' : __API_SERVER_URL__);
 
@@ -6,6 +7,21 @@ export const url = (path: string): string => {
   const base = String(BACKEND_URL).replace(/\/+$/, '');
   const suffix = String(path).replace(/^\/+/, '');
   return `${base}/${suffix}`;
+};
+
+const authHeaders = (): Record<string, string> => {
+  const credentials = getCredentials();
+  if (!credentials) {
+    return {};
+  }
+  return {
+    'Authorization': 'Basic ' + btoa(credentials.username + ':' + credentials.password)
+  };
+};
+
+export const apiFetch = (requestUrl: string, init: RequestInit = {}) => {
+  const headers = Object.assign({ 'Accept': 'application/json' }, authHeaders(), init.headers);
+  return fetch(requestUrl, Object.assign({}, init, { headers }));
 };
 
 /**
@@ -19,14 +35,22 @@ export const submitForm = (method: IHttpMethod, path: string, data: any, onSucce
 
   const fetchParams = {
     method: method,
-    headers: {
+    headers: Object.assign({
       'Accept': 'application/json',
       'Content-Type': 'application/json'
-    },
+    }, authHeaders()),
     body: JSON.stringify(data)
   };
 
   console.log('Submitting to ' + method + ' ' + requestUrl);
-  return fetch(requestUrl, fetchParams)
-    .then(response => response.status === 204 ? onSuccess(response.status, {}) : response.json().then(result => onSuccess(response.status, result)));
+  return apiFetch(requestUrl, fetchParams)
+    .then(response => {
+      if (response.status === 204) {
+        return onSuccess(response.status, {});
+      }
+      return response.text().then(text => {
+        const result = text ? JSON.parse(text) : {};
+        return onSuccess(response.status, result);
+      });
+    });
 };

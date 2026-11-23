@@ -2,11 +2,12 @@ import * as React from 'react';
 
 import { url, submitForm } from '../util';
 import { saveCredentials } from '../util/authStorage';
+import withRouter from '../withRouter';
 
 import Input from './form/Input';
 import { NotEmpty } from './form/Constraints';
 
-import { IError, IFieldError } from '../types';
+import { IError, IFieldError, IRouterProps } from '../types';
 
 interface ICredentials {
   username: string;
@@ -19,7 +20,7 @@ interface ILoginPageState {
   loginError?: string;
 }
 
-export default class LoginPage extends React.Component<{}, ILoginPageState> {
+class LoginPage extends React.Component<IRouterProps, ILoginPageState> {
 
   constructor(props) {
     super(props);
@@ -42,7 +43,7 @@ export default class LoginPage extends React.Component<{}, ILoginPageState> {
     submitForm('POST', '/api/login', { username: credentials.username, password: credentials.password }, (status) => {
       if (status >= 200 && status < 300) {
         saveCredentials(credentials.username, credentials.password);
-        this.setState({ loginError: undefined });
+        this.props.navigate('/');
       } else {
         this.setState({ loginError: 'Invalid username or password' });
       }
@@ -81,3 +82,5 @@ export default class LoginPage extends React.Component<{}, ILoginPageState> {
     );
   }
 }
+
+export default withRouter(LoginPage);

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { IOwner, IVisit, IError, IRouterProps } from '../../types';
 
-import { url, submitForm } from '../../util';
+import { url, submitForm, apiFetch } from '../../util';
 import withRouter from '../../withRouter';
 import { NotEmpty } from '../form/Constraints';
 
@@ -33,7 +33,7 @@ class VisitsPage extends React.Component<IVisitsPageProps, IVisitsPageState> {
     const { params } = this.props;
 
     if (params && params.ownerId) {
-      fetch(url(`/api/owners/${params.ownerId}`))
+      apiFetch(url(`/api/owners/${params.ownerId}`))
         .then(response => response.json())
         .then(owner => this.setState(
           {

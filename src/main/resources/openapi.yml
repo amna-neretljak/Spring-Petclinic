@@ -25,6 +25,8 @@ tags:
     description: Endpoints related to pet types.
   - name: specialty
     description: Endpoints related to vet specialties.
+  - name: login
+    description: Sign-in.
 paths:
   /oops:
     get:
@@ -1769,6 +1771,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RestError'
+  /login:
+    post:
+      tags:
+        - login
+      operationId: login
+      summary: Sign in
+      description: Checks a username and password against the existing user store.
+      requestBody:
+        description: The username and password
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        200:
+          description: Signed in successfully.
+        400:
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestError'
+        401:
+          description: Invalid username or password.
+        500:
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestError'
   /users:
     post:
       tags:
@@ -2173,6 +2206,28 @@ components:
               readOnly: true
           required:
             - id
+    Login:
+      title: Login
+      description: Username and password for sign-in.
+      type: object
+      properties:
+        username:
+          title: username
+          description: The username
+          type: string
+          maxLength: 80
+          minLength: 1
+          example: admin
+        password:
+          title: Password
+          description: The password
+          type: string
+          maxLength: 80
+          minLength: 1
+          example: admin
+      required:
+        - username
+        - password
     User:
       title: User
       description: An user.

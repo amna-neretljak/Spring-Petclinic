@@ -4,14 +4,21 @@ import { render, fireEvent } from '@testing-library/react';
 import { submitForm } from '../../../src/util';
 import LoginPage from '../../../src/components/LoginPage';
 
+const mockNavigate = jest.fn();
+
 jest.mock('../../../src/util', () => ({
   url: (path: string) => path,
   submitForm: jest.fn()
 }));
 
+jest.mock('../../../src/withRouter', () => (Component: any) => (props: any) => (
+  <Component {...props} navigate={mockNavigate} params={{}} location={{ pathname: '/login' }} />
+));
+
 describe('LoginPage', () => {
   beforeEach(() => {
     localStorage.clear();
+    mockNavigate.mockReset();
     (submitForm as jest.Mock).mockReset();
   });
 
@@ -73,6 +80,8 @@ describe('LoginPage', () => {
 
     expect(localStorage.getItem('petclinic.username')).toBe('admin');
     expect(localStorage.getItem('petclinic.password')).toBe('secret');
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 });
+
 

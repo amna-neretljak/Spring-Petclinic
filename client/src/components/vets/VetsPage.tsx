@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { url } from '../../util';
+import { url, apiFetch } from '../../util';
 
 import { IVet } from '../../types';
 
@@ -18,7 +18,7 @@ export default class VetsPage extends React.Component<{}, IVetsPageState> {
   componentDidMount() {
     const requestUrl = url('api/vets');
 
-    fetch(requestUrl)
+    apiFetch(requestUrl)
       .then(response => response.json())
       .then(vets => { console.log('vets', vets); this.setState({ vets }); });
   }

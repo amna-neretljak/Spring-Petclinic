@@ -19,11 +19,11 @@ The client is a small React SPA in `client/`. There is **no** Redux, React Query
 ## Talking to the API
 
 - Build URLs with `url('/api/...')` so the `/petclinic` prefix and slashes stay correct.
-- GET with `fetch`. POST/PUT with `submitForm`.
+- GET with `apiFetch`. POST/PUT with `submitForm`. Both attach `Authorization: Basic` when `petclinic.username` and `petclinic.password` are in localStorage.
 - Treat **any 2xx** as success (many PUTs return **204**).
 - List endpoints return **404** with an empty body when there are no rows. Map that to `[]`; do not call `response.json()` on 404.
 - Prefer nested paths the screens already use: `/api/owners`, `/api/owners/{id}/pets`, `/api/owners/{id}/pets/{petId}/visits`. Do not POST `/api/pets` (it does not set `owner_id`).
 
 ## Forms
 
-Keep local state on the page. Reuse `form/` widgets. Do not add Formik, React Hook Form, or a component library unless the user asks. Authorization headers are added in a later login phase.
+Keep local state on the page. Reuse `form/` widgets. Do not add Formik, React Hook Form, or a component library unless the user asks.

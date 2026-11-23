@@ -11,8 +11,15 @@ export const clearCredentials = () => {
   localStorage.removeItem(PASSWORD_KEY);
 };
 
-export const isSignedIn = (): boolean => {
+export const getCredentials = (): { username: string, password: string } | null => {
   const username = localStorage.getItem(USERNAME_KEY);
   const password = localStorage.getItem(PASSWORD_KEY);
-  return !!username && !!password;
+  if (!username || !password) {
+    return null;
+  }
+  return { username, password };
+};
+
+export const isSignedIn = (): boolean => {
+  return getCredentials() !== null;
 };

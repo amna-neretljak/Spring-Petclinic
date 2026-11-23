@@ -2,7 +2,7 @@ import * as React from 'react';
 import OwnerEditor from './OwnerEditor';
 
 import { IOwner, IRouterProps } from '../../types';
-import { url } from '../../util';
+import { url, apiFetch } from '../../util';
 import withRouter from '../../withRouter';
 
 interface IEditOwnerPageProps extends IRouterProps {
@@ -18,7 +18,7 @@ class EditOwnerPage extends React.Component<IEditOwnerPageProps, IEditOwnerPageS
 
     if (params && params.ownerId) {
       const fetchUrl = url(`/api/owners/${params.ownerId}`);
-      fetch(fetchUrl)
+      apiFetch(fetchUrl)
         .then(response => response.json())
         .then(owner => this.setState({ owner }));
     }

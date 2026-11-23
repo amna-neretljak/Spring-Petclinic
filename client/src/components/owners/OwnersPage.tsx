@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { IOwner, IRouterProps } from '../../types';
-import { url } from '../../util';
+import { url, apiFetch } from '../../util';
 import withRouter from '../../withRouter';
 
 import OwnerInformation from './OwnerInformation';
@@ -27,7 +27,7 @@ class OwnersPage extends React.Component<IOwnersPageProps, IOwnerPageState> {
 
     if (params && params.ownerId) {
       const fetchUrl = url(`/api/owners/${params.ownerId}`);
-      fetch(fetchUrl)
+      apiFetch(fetchUrl)
         .then(response => response.json())
         .then(owner => this.setState({ owner }));
     }

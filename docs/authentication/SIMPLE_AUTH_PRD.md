@@ -269,7 +269,7 @@ Every phase has a **TDD record** (fill in with the real command output when the 
 
 **Manual check**: in DevTools → Application → Local Storage, set `petclinic.username` and `petclinic.password`, then refresh: the menu shows **Logout**. Click **Logout**: both keys are gone and the menu shows **Login**. Successful form login that writes the keys is Phase 5. User confirmed 23 November 2026.
 
-### Phase 5: POST /api/login and Authorization header - PLANNED
+### Phase 5: POST /api/login and Authorization header - COMPLETED
 
 **Objective**: The login HTTP endpoint returns 200 or 401, the form can complete a real sign-in, and later API calls send Basic credentials.
 
@@ -283,11 +283,12 @@ Every phase has a **TDD record** (fill in with the real command output when the 
 
 **Deliverables**: OpenAPI `/login`; generated API/DTO; `LoginRestController` (or an added method on `UserRestController`) calling `UserService.login`; `LoginRestControllerTests`; Authorization header in `client/src/util/index.tsx`.
 
-**TDD record** (fill in when running the phase):
-- Red: `./mvnw test` — login HTTP tests fail (no `/api/login` or wrong status); `npm test` — Authorization helper tests fail.
-- Green: `./mvnw test` — 200 for `admin`/`admin`, 401 for bad username and bad password; `npm test` — header present when stored, absent when not.
+**TDD record**:
+- Red: `./mvnw test -Dtest=LoginRestControllerTests` — test compile failed: `cannot find symbol class LoginRestController`. `npm test` in `client/` — no exported `apiFetch`; 2xx login did not call `navigate('/')`.
+- Green: `./mvnw test` — BUILD SUCCESS, Tests run: 201, Failures: 0 (`LoginRestControllerTests` 3 tests). `npm test` in `client/` — Test Suites: 6 passed, Tests: 28 passed.
+- Manual confirmation: curl returned 200 for `admin`/`admin` and 401 for wrong password and unknown username. Browser: login wrote localStorage keys, menu showed Logout, Find Owners sent `Authorization: Basic YWRtaW46YWRtaW4=`, wrong password stayed on the form, Logout cleared the keys.
 
-**Manual check**: start `./mvnw spring-boot:run` and `PORT=4444 npm start` from `client/`.
+**Manual check**: start `./mvnw spring-boot:run` and `PORT=4444 npm start` from `client/`. User confirmed 23 November 2026.
 
 Curl:
 
@@ -354,17 +355,17 @@ Authorization: Basic <that>
 - [x] `login("admin", "admin")` is true
 - [x] `login` with a wrong username is false
 - [x] `login` with a wrong password is false
-- [ ] `POST /api/login` with `admin` / `admin` returns 200 and no extra body
-- [ ] `POST /api/login` with an invalid username returns 401
-- [ ] `POST /api/login` with an invalid password returns 401
+- [x] `POST /api/login` with `admin` / `admin` returns 200 and no extra body
+- [x] `POST /api/login` with an invalid username returns 401
+- [x] `POST /api/login` with an invalid password returns 401
 - [x] Menu has **Login** when signed out; it opens `/login`
 - [x] The login form posts username and password to `/api/login`
 - [x] After 200, `localStorage` holds `petclinic.username` and `petclinic.password`
 - [x] After success, the menu shows **Logout**
 - [x] Logout clears `localStorage` and shows **Login**
-- [ ] Later API calls include `Authorization: Basic` with Base64 of `username:password`
-- [ ] No user-creation form was added
-- [ ] No backend session or logout API was added
+- [x] Later API calls include `Authorization: Basic` with Base64 of `username:password`
+- [x] No user-creation form was added
+- [x] No backend session or logout API was added
 
 ---
 
@@ -487,6 +488,6 @@ Add entries as bugs are found. Starters:
 ## Current Status
 
 **Last Updated**: 23 November 2026
-**Current Phase**: Phase 5 - POST /api/login and Authorization header
-**Status**: Phase 4 COMPLETED
-**Next Steps**: After commit (if requested), start Phase 5
+**Current Phase**: All phases COMPLETED
+**Status**: Phase 5 COMPLETED
+**Next Steps**: Commit Phase 5; push `feature/login` when ready

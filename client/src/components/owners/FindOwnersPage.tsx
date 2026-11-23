@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Link } from 'react-router';
 import { IOwner, IRouterProps } from '../../types';
-import { url } from '../../util';
+import { url, apiFetch } from '../../util';
 import withRouter from '../../withRouter';
 
 import OwnersTable from './OwnersTable';
@@ -81,7 +81,7 @@ class FindOwnersPage extends React.Component<IFindOwnersPageProps, IFindOwnersPa
     const requestUrl = url('api/owners?lastName=' + query);
 
     // the backend answers 404 with an empty body when no owner matches
-    fetch(requestUrl)
+    apiFetch(requestUrl)
       .then(response => response.status === 404 ? [] : response.json())
       .then(owners => { this.setState({ owners }); });
   }
