@@ -80,7 +80,7 @@ export interface IEditablePet extends INamedEntity {
 export interface IPetRequest {
   name: string;
   birthDate?: string;
-  typeId: IPetTypeId;
+  type: IPetType;
 }
 
 export interface IOwner extends IPerson {

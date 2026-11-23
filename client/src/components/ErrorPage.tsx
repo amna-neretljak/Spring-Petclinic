@@ -17,8 +17,16 @@ export default class ErrorPage extends React.Component<{}, IErrorPageState> {
 
   componentDidMount() {
     fetch(url('api/oops'))
-      .then(response => response.json())
-      .then(error => this.setState({error}));
+      .then(response => response.json().catch(() => ({})).then(body => ({ status: response.status, body })))
+      .then(({ status, body }) => this.setState({
+        error: {
+          status: String(body.status ?? body.className ?? status),
+          message: body.message || body.exMessage || 'Unknown error'
+        }
+      }))
+      .catch(() => this.setState({
+        error: { status: 'unknown', message: 'Could not reach the error endpoint' }
+      }));
   }
 
   render() {

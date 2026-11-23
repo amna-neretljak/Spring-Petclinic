@@ -36,10 +36,17 @@ class OwnerEditor extends React.Component<IOwnerEditorProps, IOwnerEditorState> 
     const { owner } = this.state;
 
     const url = owner.isNew ? '/api/owners' : '/api/owners/' + owner.id;
-    submitForm(owner.isNew ? 'POST' : 'PUT', url, owner, (status, response) => {
-      if (status === 200 || status === 201) {
-        const newOwner = response as IOwner;
-        this.props.navigate('/owners/' + newOwner.id);
+    const request = {
+      firstName: owner.firstName,
+      lastName: owner.lastName,
+      address: owner.address,
+      city: owner.city,
+      telephone: owner.telephone
+    };
+    submitForm(owner.isNew ? 'POST' : 'PUT', url, request, (status, response) => {
+      if (status >= 200 && status < 300) {
+        const id = (response && response.id) ? response.id : owner.id;
+        this.props.navigate('/owners/' + id);
       } else {
         console.log('ERROR?!...', response);
         this.setState({ error: response });

@@ -36,15 +36,16 @@ class PetEditor extends React.Component<IPetEditorProps, IPetEditorState> {
     const { owner } = this.props;
     const { editablePet } = this.state;
 
+    const selectedType = (this.props.pettypes || []).find(option => String(option.value) === String(editablePet.typeId));
     const request: IPetRequest = {
       birthDate: editablePet.birthDate,
       name: editablePet.name,
-      typeId: editablePet.typeId
+      type: selectedType ? { id: Number(selectedType.value), name: selectedType.name, isNew: false } : null
     };
 
     const url = editablePet.isNew ? '/api/owners/' + owner.id + '/pets' :  '/api/owners/' + owner.id + '/pets/' + editablePet.id;
     submitForm(editablePet.isNew ? 'POST' : 'PUT', url, request, (status, response) => {
-      if (status === 204) {
+      if (status >= 200 && status < 300) {
         this.props.navigate('/owners/' + owner.id);
       } else {
         console.log('ERROR?!...', response);

@@ -167,13 +167,32 @@ public class OwnerRestController implements OwnersApi {
 
     @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
     @Override
+    public ResponseEntity<Void> updateOwnersPet(Integer ownerId, Integer petId, PetFieldsDto petFieldsDto) {
+        Owner owner = this.clinicService.findOwnerById(ownerId);
+        Pet currentPet = this.clinicService.findPetById(petId);
+        if (owner == null || currentPet == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if (currentPet.getOwner() == null || !currentPet.getOwner().getId().equals(owner.getId())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        currentPet.setName(petFieldsDto.getName());
+        currentPet.setBirthDate(petFieldsDto.getBirthDate());
+        PetType petType = this.clinicService.findPetTypeByName(petFieldsDto.getType().getName());
+        currentPet.setType(petType);
+        this.clinicService.savePet(currentPet);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
+    @Override
     public ResponseEntity<PetDto> getOwnersPet(Integer ownerId, Integer petId) {
         Owner owner = this.clinicService.findOwnerById(ownerId);
         Pet pet = this.clinicService.findPetById(petId);
         if (owner == null || pet == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            if (!pet.getOwner().equals(owner)) {
+            if (pet.getOwner() == null || !pet.getOwner().getId().equals(owner.getId())) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             } else {
                 return new ResponseEntity<>(petMapper.toPetDto(pet), HttpStatus.OK);

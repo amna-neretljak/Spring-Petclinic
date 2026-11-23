@@ -12,6 +12,10 @@ describe('util', () => {
     it('returns url with full path', () => {
       expect(url('xxx')).toBe('http://localhost:9966/petclinic/xxx');
     });
+
+    it('does not insert a double slash when the path starts with /', () => {
+      expect(url('/api/owners/1')).toBe('http://localhost:9966/petclinic/api/owners/1');
+    });
   });
 
   describe('submitForm', () => {
@@ -21,7 +25,7 @@ describe('util', () => {
         const fetchMock = globalThis.fetch as jest.Mock;
         // make sure request data is passed to fetch as expected 
         expect(fetchMock.mock.calls.length).toBe(1);
-        expect(fetchMock.mock.calls[0][0]).toBe('http://localhost:9966/petclinic//some-enzyme');
+        expect(fetchMock.mock.calls[0][0]).toBe('http://localhost:9966/petclinic/some-enzyme');
         expect(fetchMock.mock.calls[0][1].method).toBe('POST');
         expect(fetchMock.mock.calls[0][1].body).toEqual(JSON.stringify({ name: 'Test' }));
 

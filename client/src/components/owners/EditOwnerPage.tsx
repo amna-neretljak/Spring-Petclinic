@@ -17,7 +17,7 @@ class EditOwnerPage extends React.Component<IEditOwnerPageProps, IEditOwnerPageS
     const { params } = this.props;
 
     if (params && params.ownerId) {
-      const fetchUrl = url(`/api/owner/${params.ownerId}`);
+      const fetchUrl = url(`/api/owners/${params.ownerId}`);
       fetch(fetchUrl)
         .then(response => response.json())
         .then(owner => this.setState({ owner }));
