@@ -1,0 +1,24 @@
+---
+description: Schema lives in SQL scripts, not migrations or Hibernate DDL
+globs: src/main/resources/db/**/*.sql,src/main/resources/application*.properties,src/main/java/**/model/**/*.java
+alwaysApply: false
+---
+
+# Database schema
+
+There is **no migration framework** (no Flyway, no Liquibase). Hibernate is `ddl-auto=none`, so entities never create or alter tables.
+
+## How schema is applied
+
+- Default DB is in-memory HSQLDB. On each backend start it runs `db/hsqldb/initDB.sql`, then `populateDB.sql`, then discards data on shutdown.
+- MySQL and PostgreSQL copies live under `db/mysql/` and `db/postgresql/`. Those profiles do **not** auto-run the scripts. You apply SQL yourself.
+
+## Changing the schema
+
+1. Edit `initDB.sql` in **all three** dialects (`hsqldb`, `mysql`, `postgresql`).
+2. Update `populateDB.sql` in each dialect if seed data must match.
+3. Update the matching JPA entity in `model/` so fields and column names still agree.
+4. For local HSQLDB, restart `./mvnw spring-boot:run`. Do not run ad-hoc `ALTER` against the in-memory DB and expect it to stick.
+5. For MySQL or PostgreSQL, run the same SQL on that database by hand. Nothing in the app will migrate it.
+
+Do not add Flyway or Liquibase unless the user asks. Do not set `ddl-auto` to `update` or `create` to “save a script.”

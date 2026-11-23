@@ -1,0 +1,29 @@
+---
+description: Custom React SPA — no Redux, no form library, no component kit; use form/ and url()
+globs: client/src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Frontend
+
+The client is a small React SPA in `client/`. There is **no** Redux, React Query, CSS-in-JS, or UI kit (no MUI, no shadcn). Screens are custom components. Markup is Bootstrap 3 classes. Shared fields live in `components/form/`.
+
+## Layout
+
+- Routes: `configureRoutes.tsx`
+- Types: `types/index.ts`
+- HTTP: `util/index.tsx` — `url()` and `submitForm()` only
+- Fields: `Input`, `DateInput`, `SelectInput`, `Constraints` (`NotEmpty`, `Digits`)
+- Pages are mostly **class components**. Use `withRouter` for `params` / `navigate`. Do not rewrite a page to hooks unless asked.
+
+## Talking to the API
+
+- Build URLs with `url('/api/...')` so the `/petclinic` prefix and slashes stay correct.
+- GET with `fetch`. POST/PUT with `submitForm`.
+- Treat **any 2xx** as success (many PUTs return **204**).
+- List endpoints return **404** with an empty body when there are no rows. Map that to `[]`; do not call `response.json()` on 404.
+- Prefer nested paths the screens already use: `/api/owners`, `/api/owners/{id}/pets`, `/api/owners/{id}/pets/{petId}/visits`. Do not POST `/api/pets` (it does not set `owner_id`).
+
+## Forms
+
+Keep local state on the page. Reuse `form/` widgets. Do not add Formik, React Hook Form, or a component library unless the user asks. There is no login page and no `Authorization` header.

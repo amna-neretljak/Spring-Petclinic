@@ -1,0 +1,29 @@
+---
+description: Contract-first REST; edit openapi.yml, implement generated *Api, map via MapStruct
+globs: src/main/resources/openapi.yml,src/main/java/**/rest/**/*.java,src/main/java/**/mapper/**/*.java
+alwaysApply: false
+---
+
+# API and controllers
+
+The HTTP API is **contract-first**. Base URL: `http://localhost:9966/petclinic/api`.
+
+## Change an endpoint
+
+1. Edit `src/main/resources/openapi.yml` first.
+2. Rebuild so `openapi-generator-maven-plugin` regenerates `rest.api.*Api` and `rest.dto.*Dto`.
+3. Implement the method on the matching controller. Do **not** add your own `@GetMapping` / `@PostMapping` — the generated interface owns the paths.
+4. Convert DTO ↔ entity with the MapStruct mapper in `mapper/`.
+
+Never hand-edit generated `rest.api` or `rest.dto` classes.
+
+## Controller habits
+
+- Call `ClinicService` (or `UserService` for `POST /api/users`), then return `ResponseEntity`.
+- Empty collections and unknown ids → **404** with an empty body, not `[]`.
+- Create → **201** + `Location`. Most updates → **204** (OpenAPI often still says 200; keep 204 unless you change both).
+- Nested pet and visit routes live on `OwnerRestController`, even though they are pet/visit resources.
+- `@PreAuthorize` is already on methods. Security is **off** by default (`petclinic.security.enable=false`). Do not add a login API unless asked.
+- `WebSecurityConfig` CORS allows `GET, POST, PUT, OPTIONS` from `http://localhost:4444` — not `DELETE`. The UI never calls DELETE.
+
+The React app uses nested owner paths for pets/visits, `GET /api/pettypes`, and `GET /api/vets`. Standalone `/api/pets` and `/api/visits` writes are not used by the UI.

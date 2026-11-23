@@ -1,0 +1,23 @@
+---
+description: ClinicService is the only clinic facade; do not add per-entity services
+globs: src/main/java/**/service/**/*.java
+alwaysApply: false
+---
+
+# Service layer
+
+`ClinicService` / `ClinicServiceImpl` is the single facade for owners, pets, visits, vets, pet types, and specialties. `UserService` only saves users for the auth slice.
+
+## Do
+
+- Put new clinic operations on `ClinicService`, then implement them in `ClinicServiceImpl`.
+- Inject repository **interfaces**, never a `jpa` / `jdbc` / `springdatajpa` class.
+- Mark methods `@Transactional`. Use `readOnly = true` on finds.
+- Treat missing rows as `null` (catch `ObjectRetrievalFailureException` / `EmptyResultDataAccessException`), matching existing find-by-id methods.
+
+## Do not
+
+- Add `OwnerService`, `PetService`, or similar. The sample keeps one clinic facade on purpose.
+- Call repositories from REST controllers. Mapping and HTTP status stay in the controller; persistence stays here.
+- Put HTTP types (`*Dto`, `ResponseEntity`) in the service. It works with `model/` entities.
+- Add extra domain rules here unless asked. Validation lives on entities/DTOs; this layer is mostly find / save / delete plus a few lookups by name (`findPetTypeByName`, `findSpecialtiesByNameIn`).

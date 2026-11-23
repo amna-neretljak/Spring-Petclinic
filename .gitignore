@@ -8,6 +8,9 @@ target/*
 
 generated/
 
+# Cursor search index cache
+cursor/
+
 # Easier branch switching
 springboot-petclinic-client/
 springboot-petclinic-server/

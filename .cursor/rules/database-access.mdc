@@ -1,0 +1,31 @@
+---
+description: Repository interfaces have three implementations; default is Spring Data JPA
+globs: src/main/java/**/repository/**/*.java
+alwaysApply: false
+---
+
+# Database access
+
+Controllers and the UI never talk to a repository. They go through `ClinicService` (clinic data) or `UserService` (users).
+
+## Three implementations, one active
+
+The service layer depends only on interfaces in `repository/` (`OwnerRepository`, `PetRepository`, …). Spring loads **one** package from the profile:
+
+| Profile | Package | Style |
+|---|---|---|
+| `spring-data-jpa` (default) | `repository.springdatajpa` | Spring Data + `@Query` JPQL |
+| `jpa` | `repository.jpa` | Hand-written `EntityManager` |
+| `jdbc` | `repository.jdbc` | `JdbcTemplate` + row mappers |
+
+If you add or change a method on the interface, update **all three** implementations. Default local profile is `hsqldb,spring-data-jpa`.
+
+## Spring Data conventions
+
+- Method names follow Spring Data query derivation where that is enough.
+- Use `@Query` with `join fetch` when the caller needs children after the transaction ends (`spring.jpa.open-in-view=false`). Owners load pets this way.
+- Deletes that Spring Data cannot derive go on `*Override` + `*Impl` in `springdatajpa/`.
+
+## Lookups
+
+Missing rows: repositories may throw; `ClinicServiceImpl` catches that and returns `null`. Do not compare JPA entities with `equals` across sessions — compare **ids** (nested pet GET/PUT already does this).
