@@ -1,0 +1,41 @@
+---
+description: Test-first JUnit 5 tests for backend controllers and services
+globs: src/test/java/**/*.java,src/main/java/**/rest/controller/**/*.java,src/main/java/**/security/**/*.java
+alwaysApply: false
+---
+
+# Unit testing (JUnit 5, test first)
+
+## Workflow
+
+1. Write the failing test first. Run it and see it fail.
+2. Write the smallest code that makes it pass.
+3. Run the whole suite before saying the work is done.
+
+```
+./mvnw test -Dtest=UserRestControllerTests   # one class
+./mvnw test                                   # everything
+```
+
+## Controller tests
+
+Copy the pattern in `rest/controller/UserRestControllerTests.java` and `VetRestControllerTests.java`:
+
+- `@SpringBootTest`, `@ContextConfiguration(classes = ApplicationTestConfig.class)`, `@WebAppConfiguration`
+- `MockMvc` built with `MockMvcBuilders.standaloneSetup(controller)` and `.setControllerAdvice(new ExceptionControllerAdvice())`
+- Stub services with `@MockBean` and `given(...).willReturn(...)`. A plain `@Mock` field is not injected into the controller.
+- Set the caller's role with `@WithMockUser(roles = "ADMIN")` (or `OWNER_ADMIN`, `VET_ADMIN`)
+- Assert the HTTP status and, where it matters, the JSON body with `jsonPath`
+- Paths have no context path: `post("/api/users")`, not `/petclinic/api/users`
+
+Test both sides of every endpoint: the success case and at least one error (400, 401, or 404).
+
+## Service tests
+
+Put the test in an abstract `Abstract*ServiceTests` class. Run it once per repository profile through small subclasses (`*SpringDataJpaTests`, `*JpaTests`, `*JdbcTests`) with `@ActiveProfiles`.
+
+## Good to know
+
+- Test config is `src/test/resources/application.properties`. It sets `petclinic.security.enable=true`, unlike the app.
+- Tests use the in-memory HSQLDB seed data (`admin` / `admin` with all three roles).
+- Name tests by behaviour: `testLoginSuccess`, `testLoginWrongPassword`.

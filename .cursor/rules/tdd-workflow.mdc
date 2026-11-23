@@ -1,0 +1,35 @@
+---
+description: Test-driven workflow for every feature phase - tests first, green, then manual check
+alwaysApply: true
+---
+
+# TDD workflow
+
+## Precondition
+
+A technical PRD for the feature exists, based on `docs/TEMPLATE_TECHNICAL_PRD.md`, with clearly documented phases and individual steps. If it does not, stop and ask for it (or offer to write it) before writing any test or code.
+
+## Phases and steps
+
+Every feature is built in phases. Each phase is a list of small, numbered steps in the feature's PRD. One step is one behaviour, small enough to test on its own.
+
+## For each phase
+
+1. **Say what the phase is.** Name the phase and list its steps before touching code.
+2. **Write the tests first.** Add the tests for the phase, following `unit-testing.mdc`.
+3. **Run the tests and see them fail.**
+   ```
+   ./mvnw test
+   ```
+   New tests must fail for the expected reason (missing endpoint, wrong status), not because of a compile error elsewhere.
+4. **Implement the feature.** Write all the code the phase needs, following the other rules in `.cursor/rules/`.
+5. **Run the tests again.**
+   ```
+   ./mvnw test
+   ```
+6. **Fix and rerun until green.** If anything fails, fix the code and run `./mvnw test` again. Repeat until every test passes. Do not delete, skip, or weaken a test to make it pass. If a test itself is wrong, say so and explain the change.
+7. **Report the result.** Give the number of tests run and passed, and what changed.
+8. **Ask for a manual test, then stop.** Tell the user exactly how to check it: what to start, which URL to open, what to do, and what they should see. Wait for their confirmation. Do not start the next phase.
+9. **After confirmation:** mark the phase COMPLETED in the PRD, then ask about committing (see `commit-after-phase.mdc`).
+
+If the phase changes client code, also run `npm test` in `client/` at steps 3 and 5.
